@@ -25,7 +25,7 @@ pipeline {
         stage('Plan') {
             steps {
                 script {
-                    dir('terraform') {
+                    {
                         sh 'terraform init'
                         sh 'terraform plan -out=tfplan'
                         sh 'terraform show -no-color tfplan > tfplan.txt'
@@ -52,7 +52,7 @@ pipeline {
         stage('Apply') {
             steps {
                 script {
-                    dir('terraform') {
+                  {
                         sh 'terraform apply -input=false tfplan'
                     }
                 }
