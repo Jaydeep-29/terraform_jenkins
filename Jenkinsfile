@@ -14,7 +14,9 @@ pipeline {
             steps {
                  script{
                         dir("terraform")
+                        
                         {
+                            git branch: 'main', 
                             git "https://github.com/Jaydeep-29/terraform_jenkins.git"
                         }
                     }
