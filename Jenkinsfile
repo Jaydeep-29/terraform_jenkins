@@ -2,14 +2,13 @@ pipeline {
     agent any
 
     environment {
-        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
-        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        GIT_REPO = 'https://github.com/Jaydeep-29/terraform_jenkins.git'
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/Jaydeep-29/terraform_jenkins.git'
+                git branch: 'main', url: env.GIT_REPO
             }
         }
 
@@ -31,9 +30,7 @@ pipeline {
 
         stage('Approval') {
             when {
-                not {
-                    equals expected: true, actual: params.autoApprove
-                }
+                not { equals expected: true, actual: params.autoApprove }
             }
             steps {
                 script {
@@ -46,8 +43,10 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {
-                script {
-                    sh 'terraform apply -auto-approve'
+                withAWS(credentials: 'CICD_user', region: 'eu-west-2') {
+                    script {
+                        sh 'terraform apply -auto-approve'
+                    }
                 }
             }
         }
